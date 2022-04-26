@@ -2,3 +2,4 @@ oauth.txt
 pricingHistory
 credentials.json
 chromedriver.exe
+__pycache__

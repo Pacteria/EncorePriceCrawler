@@ -1,18 +1,16 @@
 from attr import attr
-import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
-import yagmail
 import csv
-from datetime import date,datetime
+from datetime import date
 
 absPATH = 'E:/Github_repos/EncorePriceCrawler/'
 
 def crawler(URL):
     '''
     parse pricing information from encore's website
-    returns a python list of pricing infor
+    returns a python list of pricing info
     '''
     # use selenium to fetch dynamic content
     options = webdriver.ChromeOptions()
@@ -82,9 +80,9 @@ def crawler(URL):
     data = data[:-6]
 
     # write result to csv file
-    PATH = absPATH+f'pricingHistory/{date.today()}_{datetime.now().strftime("%H_%M_%S")}.csv'
-    fields = ['Unit', 'Sq.Ft.', 'Rent', 'Date Available']    
-    with open(PATH, 'w') as f:
+    PATH = absPATH+f'pricingHistory/{date.today()}.csv'
+    fields = ['UnitID', 'Sq.Ft.', 'Rent', 'Date Available']    
+    with open(PATH, 'w',newline='') as f:
         # using csv.writer method from CSV package
         write = csv.writer(f)
         
@@ -93,29 +91,6 @@ def crawler(URL):
 
     return data,PATH
 
-def sendEmail(receiver,filename):
-    '''
-    handles emailing using yagmail library
-    '''
-    body = 'Daily Digist of House Pricing at Encore, Enjoy.'
 
-    yag = yagmail.SMTP("nochancedev@gmail.com",oauth2_file=absPATH+'credentials.json')
-    yag.send(
-        to=receiver,
-        subject="Daily Digist of House Pricing",
-        contents=body, 
-        attachments=filename,
-    )
-
-URL = "https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022"
-data,attPath = crawler(URL)
-mailList = ["sodabiy@gmail.com",'394309448@qq.com','zhangyy_2020@outlook.com']
-
-for receiver in mailList:
-    sendEmail(receiver,attPath)
-
-# sendEmail(mailList[0],attPath)
-
-print('Daily Digest Sent')
 
 
