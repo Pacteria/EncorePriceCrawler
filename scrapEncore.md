@@ -28,6 +28,11 @@
     * 房号，这个mapping怎么办？
       * listing里那个onclick的route是hardcoded的
 
+## selenium solution
+
+* floorPlanIdMap
+  * 这里不全，最好还是把全部表格扒下来
+
 ## docker
 
 * 开发完用来打包 
