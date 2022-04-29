@@ -8,27 +8,31 @@ def compareCSV():
     prevCSV = load_csv(open(absPATH+f'pricingHistory/{date.today() - timedelta(days = 1)}.csv'),key='UnitID')
     currCSV = load_csv(open(absPATH+f'pricingHistory/{date.today()}.csv'),key='UnitID')
     diff = compare(prevCSV,currCSV)
+    print(prevCSV['#4063']['Floor Plan'])
 
     isChanged = False
+    outputString = ''
+    
     for i in diff:
         if len(diff[i]) != 0: 
             isChanged = True
-            return diff,isChanged
-    
-    return diff,isChanged
+            outputString += (f'{len(diff[i])} {i}:\n')
+            if i == 'changed':
+                for line in diff[i]:
+                    unitID = line['key']
+                    changes = line['changes']
+                    unitFloorPlan = prevCSV[unitID]['Floor Plan']
 
-diff, changed = compareCSV()
+                    outputString += (f'    Unit: {unitID} ({unitFloorPlan})\n')
+                    for dataField in changes:
+                        outputString += (f'        {dataField}: {changes[dataField][0]} => {changes[dataField][1]}\n')
+                    outputString += '\n'
+            else:
+                outputString += '   '+str(diff[i])
+                outputString += '\n'
 
-for i in diff:
-    if diff[i]:
-        print(f'{len(diff[i])} {i}:')
-        if i == 'changed':
-            for line in diff[i]:
-                UnitID = line['key']
-                changes = line['changes']
-                print(f'    UnitID: {UnitID}')
-                for dataField in changes:
-                    print(f'        {dataField}: {changes[dataField][0]} => {changes[dataField][1]}')
-        else:
-            print(diff[i])
-    print('\n')
+    return outputString,isChanged
+
+# test module
+# diff, changed = compareCSV()
+# print(diff)
