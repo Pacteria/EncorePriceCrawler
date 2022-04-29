@@ -27,61 +27,34 @@ def crawler(URL):
     html = driver.page_source
     soup = BeautifulSoup(html,features="html.parser")
 
-    # # prints out the whole thing, test purpose
-    # print(soup.get_text())
-
-    # mapping of floor plan -> element id
     # TODO:THIS IS NOT A COMPREHENSIVE MAPPING! THERE ARE OTHER FLOOR PLANS!
-    # floorPlanIdMap = {'A1 - 1b1b':'divFPH_2322187',
-    #         'B2 - 2b2b':'divFPH_2322194',
-    #         'B2B - 2b2b':'divFPH_2322196',
-    #         'B3 - 2b2b':'divFPH_2322197',
-    #         'C1 - 3b2b':'divFPH_2322198',
-    #         'S1 - studio':'divFPH_2322186',
-    #         'cock':'cock'
-    # }
-
-    # floorPlanTables = {}
-
-    # parse a table, specific floor plan
-    # for fp in floorPlanIdMap:
-    #     data = []
-    #     allTables = soup.find_all('table',id=floorPlanIdMap[fp])
-    #     # print(allTables)
-    #     for table in allTables:
-    #         table_body = table.find('tbody')
-
-    #         rows = table_body.find_all('tr')
-    #         for row in rows:
-    #             cols = row.find_all('td')
-    #             cols = [ele.text.strip() for ele in cols]
-    #             data.append([ele for ele in cols if ele]) # Get rid of empty values
-        
-    #     floorPlanTables[fp] = data
-
-    # for fp in floorPlanTables:
-    #     print(f'Table for {fp}: ')
-    #     for i in floorPlanTables[fp]:
-    #         print(i)
+    floorPlanIdMap = {
+            'divFPH_2322187':'A1 - 1b1b',
+            'divFPH_2322190':'A3 - 1b1b',
+            'divFPH_2322194':'B2 - 2b2b',
+            'divFPH_2322196':'B2B - 2b2b',
+            'divFPH_2322197':'B3 - 2b2b',
+            'divFPH_2322198':'C1 - 3b2b',
+            'divFPH_2322186':'S1 - studio',
+    }
 
     # parse all table, no specific floor plan
     data = []
     allTables = soup.find_all('table')
     for table in allTables:
+        if "ui-datepicker-calendar" in table.get('class'): # there's a calender table that we don't need
+            continue
+        table_id = table.get('id')
         table_body = table.find('tbody')
-
         rows = table_body.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
             cols = [ele.text.strip() for ele in cols]
-            data.append([ele for ele in cols if ele]) # Get rid of empty values
-
-    # last few tables are calendar info, irrelavent
-    data = data[:-6]
+            data.append([ele for ele in cols if ele]+([floorPlanIdMap[table_id]])) # Get rid of empty values
 
     # write result to csv file
     PATH = absPATH+f'pricingHistory/{date.today()}.csv'
-    fields = ['UnitID', 'Sq.Ft.', 'Rent', 'Date Available']    
+    fields = ['UnitID', 'Sq.Ft.', 'Rent', 'Date Available', 'Floor Plan']    
     with open(PATH, 'w',newline='') as f:
         # using csv.writer method from CSV package
         write = csv.writer(f)
@@ -91,6 +64,11 @@ def crawler(URL):
 
     return data,PATH
 
+# test module
+# data,PATH = crawler("https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022")
+
+# for i in data:
+#     print(i)
 
 
 
