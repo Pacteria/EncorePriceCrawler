@@ -1,5 +1,4 @@
 import yagmail
-import json
 
 absPATH = 'E:/Github_repos/EncorePriceCrawler/'
 
@@ -7,10 +6,9 @@ def sendEmail(receiver,filename,isChanged,changes):
     '''
     handles emailing using yagmail library
     '''
-    bfJSONString = json.dumps(changes, sort_keys=True, indent=4)
 
     if isChanged:
-        body = '<h1>HEY! Change in listing detected!</h1>'+'<br>'+bfJSONString
+        body = '<h1>HEY! Change in listing detected!</h1>'+'<br>'+changes
         filename = filename
     else:
         body = '<h1>No changes detected, better luck tomorrow :)</h1>'

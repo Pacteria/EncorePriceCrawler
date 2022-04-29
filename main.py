@@ -5,7 +5,12 @@ from compareCSV import compareCSV
 
 URL = "https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022"
 data,attPath = crawler(URL)
+
+# TODO: storing mail info in plain text might not be safe
 mailList = ["sodabiy@gmail.com",'394309448@qq.com','zhangyy_2020@outlook.com']
+
+# TESTING ON 1 mail
+# mailList = [mailList[0]]
 
 diff,isChanged = compareCSV()
 

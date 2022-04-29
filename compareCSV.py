@@ -1,6 +1,5 @@
 from csv_diff import load_csv, compare
 from datetime import date,timedelta
-import json
 
 absPATH = 'E:/Github_repos/EncorePriceCrawler/'
 
@@ -8,7 +7,6 @@ def compareCSV():
     prevCSV = load_csv(open(absPATH+f'pricingHistory/{date.today() - timedelta(days = 1)}.csv'),key='UnitID')
     currCSV = load_csv(open(absPATH+f'pricingHistory/{date.today()}.csv'),key='UnitID')
     diff = compare(prevCSV,currCSV)
-    print(prevCSV['#4063']['Floor Plan'])
 
     isChanged = False
     outputString = ''
@@ -23,16 +21,16 @@ def compareCSV():
                     changes = line['changes']
                     unitFloorPlan = prevCSV[unitID]['Floor Plan']
 
-                    outputString += (f'    Unit: {unitID} ({unitFloorPlan})\n')
+                    outputString += (f'Unit: {unitID} ({unitFloorPlan})\n')
                     for dataField in changes:
-                        outputString += (f'        {dataField}: {changes[dataField][0]} => {changes[dataField][1]}\n')
+                        outputString += (f'{dataField}: {changes[dataField][0]} => {changes[dataField][1]}\n')
                     outputString += '\n'
             else:
-                outputString += '   '+str(diff[i])
+                outputString += str(diff[i])
                 outputString += '\n'
 
     return outputString,isChanged
 
-# test module
+# # test module
 # diff, changed = compareCSV()
 # print(diff)
