@@ -1,1 +1,1 @@
-"C:\Users\sodab\AppData\Local\Programs\Python\Python39\python.exe" "E:\Github_repos\EncorePriceCrawler\main.py"
+"C:\Users\sodab\AppData\Local\Programs\Python\Python39\python.exe" "E:\Github_repos\EncorePriceCrawler\main.py" pause
