@@ -3,9 +3,9 @@ from datetime import date,timedelta
 
 absPATH = 'E:/Github_repos/EncorePriceCrawler/'
 
-def compareCSV():
-    prevCSV = load_csv(open(absPATH+f'pricingHistory/{date.today() - timedelta(days = 1)}.csv'),key='UnitID')
-    currCSV = load_csv(open(absPATH+f'pricingHistory/{date.today()}.csv'),key='UnitID')
+def compareCSV(apt):
+    prevCSV = load_csv(open(absPATH+f'pricingHistory/{apt}/{date.today() - timedelta(days = 1)}.csv'),key='UnitID')
+    currCSV = load_csv(open(absPATH+f'pricingHistory/{apt}/{date.today()}.csv'),key='UnitID')
     diff = compare(prevCSV,currCSV)
 
     isChanged = False

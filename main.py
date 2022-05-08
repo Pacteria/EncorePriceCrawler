@@ -1,19 +1,21 @@
 from http.client import ImproperConnectionState
-from crawler import crawler
+from crawler import crawler_Encore
 from emailHandler import sendEmail
 from compareCSV import compareCSV
 
-URL = "https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022"
-data,attPath = crawler(URL)
+data_Encore,attPath_Encore = crawler_Encore()
 
 # TODO: storing mail info in plain text might not be safe
 mailList = ["sodabiy@gmail.com",'394309448@qq.com','zhangyy_2020@outlook.com']
 
-diff,isChanged = compareCSV()
+diffEncore,isChangedEncore = compareCSV('encore')
 
-for receiver in mailList:
-    sendEmail(receiver,attPath,isChanged,diff)
+# TODO: decide if we have to do 2 emails 
+# or can we make it one
 
-# sendEmail(mailList[0],attPath,isChanged,diff)
+# for receiver in mailList:
+#     sendEmail(receiver,attPath_Encore,isChangedEncore,diffEncore)
+
+sendEmail(mailList[0],attPath_Encore,isChangedEncore,diffEncore)
 
 print('Daily Digest Sent')

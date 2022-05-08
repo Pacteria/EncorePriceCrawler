@@ -1,3 +1,4 @@
+from math import floor
 from attr import attr
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -7,11 +8,13 @@ from datetime import date
 
 absPATH = 'E:/Github_repos/EncorePriceCrawler/'
 
-def crawler(URL):
+def crawler_Encore():
     '''
     parse pricing information from encore's website
     returns a python list of pricing info
     '''
+    URL = "https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022"
+
     # use selenium to fetch dynamic content
     options = webdriver.ChromeOptions()
     options.add_argument("--enable-javascript")
@@ -53,7 +56,7 @@ def crawler(URL):
             data.append([ele for ele in cols if ele]+([floorPlanIdMap[table_id]])) # Get rid of empty values
 
     # write result to csv file
-    PATH = absPATH+f'pricingHistory/{date.today()}.csv'
+    PATH = absPATH+f'pricingHistory/encore/{date.today()}.csv'
     fields = ['UnitID', 'Sq.Ft.', 'Rent', 'Date Available', 'Floor Plan']    
     with open(PATH, 'w',newline='') as f:
         # using csv.writer method from CSV package
@@ -64,8 +67,58 @@ def crawler(URL):
 
     return data,PATH
 
+def crawler_Cortona():
+    '''
+    parse pricing information from Cortona's website
+    returns a python list of pricing info
+    '''
+    URL = "https://www.cortonaforestpark.com/floorplans"
+
+    # use selenium to fetch dynamic content
+    options = webdriver.ChromeOptions()
+    options.add_argument("--enable-javascript")
+    # options.add_argument('headless')# this runs the task without opening a browser window
+
+    driver = webdriver.Chrome(absPATH+'chromedriver.exe',options=options)
+    driver.get(URL)
+
+    # prevents driver shutting itself down
+    time.sleep(1)
+
+    # parse to soup with beautiful soup
+    html = driver.page_source
+    soup = BeautifulSoup(html,features="html.parser")
+
+    # parse listing info to return data
+    data = []
+    floorPlans = soup.find_all(class_ = "card-title h4 font-weight-bold text-capitalize" )
+    for floorPlan in floorPlans:
+        data.append([floorPlan.text.strip()])
+    
+    avalibilities = soup.find_all(class_ = "d-block mb-2 font-weight-bold" )
+    for i in range(len(floorPlans)):
+        data[i].append(avalibilities[i].text.strip())
+    
+    startingPrices = soup.find_all(class_ = "p-2 fieldset bg-light border rounded d-flex flex-column align-items-center justify-content-center mb-2" )
+    for i in range(len(floorPlans)):
+        text = startingPrices[i].text.strip().replace("\n", "")
+        data[i].append(" ".join(text.split()))# handles repeated whitespace
+    
+    # write result to csv file
+    PATH = absPATH+f'pricingHistory/cortona/{date.today()}.csv'
+    fields = ['FloorPlan', 'Availability', 'Rent']    
+    with open(PATH, 'w',newline='') as f:
+        # using csv.writer method from CSV package
+        write = csv.writer(f)
+        
+        write.writerow(fields)
+        write.writerows(data)
+    
+    return data,'dummyPath'
+
 # test module
-# data,PATH = crawler("https://encore.securecafe.com/onlineleasing/encore-at-forest-park/rentaloptions.aspx?MoveInDate=7/1/2022")
+# data,PATH = crawler_Cortona()
+# data,PATH = crawler_Encore()
 
 # for i in data:
 #     print(i)
