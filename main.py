@@ -1,21 +1,27 @@
 from http.client import ImproperConnectionState
-from crawler import crawler_Encore
+from crawler import crawler_Encore,crawler_Cortona
 from emailHandler import sendEmail
-from compareCSV import compareCSV
+from compareCSV import compareCSV_cortona,compareCSV_encore
 
 data_Encore,attPath_Encore = crawler_Encore()
+data_Encore,attPath_Cortona = crawler_Cortona()
+attPath = [attPath_Encore,attPath_Cortona]
+
 
 # TODO: storing mail info in plain text might not be safe
 mailList = ["sodabiy@gmail.com",'394309448@qq.com','zhangyy_2020@outlook.com']
 
-diffEncore,isChangedEncore = compareCSV('encore')
+diffEncore,isChangedEncore = compareCSV_encore()
+diffCortona,isChangedCortona = compareCSV_cortona()
 
-# TODO: decide if we have to do 2 emails 
-# or can we make it one
+diff = [diffEncore,diffCortona]
+changed = (isChangedEncore and isChangedCortona)
 
-# for receiver in mailList:
-#     sendEmail(receiver,attPath_Encore,isChangedEncore,diffEncore)
+# send to all
+for receiver in mailList:
+    sendEmail(receiver,attPath,changed,diff)
 
-sendEmail(mailList[0],attPath_Encore,isChangedEncore,diffEncore)
+# FOR TEST: Send to dev
+# sendEmail(mailList[0],attPath,changed,diff)
 
 print('Daily Digest Sent')

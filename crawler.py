@@ -56,7 +56,7 @@ def crawler_Encore():
             data.append([ele for ele in cols if ele]+([floorPlanIdMap[table_id]])) # Get rid of empty values
 
     # write result to csv file
-    PATH = absPATH+f'pricingHistory/encore/{date.today()}.csv'
+    PATH = absPATH+f'pricingHistory/encore/encore_{date.today()}.csv'
     fields = ['UnitID', 'Sq.Ft.', 'Rent', 'Date Available', 'Floor Plan']    
     with open(PATH, 'w',newline='') as f:
         # using csv.writer method from CSV package
@@ -77,7 +77,10 @@ def crawler_Cortona():
     # use selenium to fetch dynamic content
     options = webdriver.ChromeOptions()
     options.add_argument("--enable-javascript")
-    # options.add_argument('headless')# this runs the task without opening a browser window
+
+    # this runs the task without opening a browser window
+    # just not work for cortona, not sure why
+    # options.add_argument('headless')
 
     driver = webdriver.Chrome(absPATH+'chromedriver.exe',options=options)
     driver.get(URL)
@@ -105,7 +108,7 @@ def crawler_Cortona():
         data[i].append(" ".join(text.split()))# handles repeated whitespace
     
     # write result to csv file
-    PATH = absPATH+f'pricingHistory/cortona/{date.today()}.csv'
+    PATH = absPATH+f'pricingHistory/cortona/cortona_{date.today()}.csv'
     fields = ['FloorPlan', 'Availability', 'Rent']    
     with open(PATH, 'w',newline='') as f:
         # using csv.writer method from CSV package
@@ -114,7 +117,7 @@ def crawler_Cortona():
         write.writerow(fields)
         write.writerows(data)
     
-    return data,'dummyPath'
+    return data,PATH
 
 # test module
 # data,PATH = crawler_Cortona()
