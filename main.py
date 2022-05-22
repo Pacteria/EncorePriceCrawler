@@ -8,8 +8,8 @@ data_Encore,attPath_Cortona = crawler_Cortona()
 attPath = [attPath_Encore,attPath_Cortona]
 
 
-# TODO: storing mail info in plain text might not be safe
-mailList = ["sodabiy@gmail.com",'394309448@qq.com','zhangyy_2020@outlook.com']
+# insert recipents mail address in mailList
+mailList = []
 
 diffEncore,isChangedEncore = compareCSV_encore()
 diffCortona,isChangedCortona = compareCSV_cortona()
